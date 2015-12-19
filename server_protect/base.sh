@@ -23,8 +23,9 @@ iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-above 20 -j REJECT 
 
 #对同一ip在多少时间内访问量限制
 #参考https://github.com/ProgramMaster/dns-anti-DDoS
-iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m recent --set --name DDOS --rsource
-iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m recent --update --seconds 1 --hitcount 10 --name DDOS --rsource -j DROP #对1秒超过15个请求直接DROP
+#iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m recent --set --name DDOS --rsource
+#iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m recent --update --seconds 1 --hitcount 10 --name DDOS --rsource -j DROP #对1秒超过15个请求直接DROP
+iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --update --seconds 60 --hitcount 30 -j REJECT iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --set -j ACCEPT
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT #开放80端口
 
 #===============拒绝其他端口访问,并可以登陆ftp========
